@@ -1,0 +1,92 @@
+
+
+server:
+  port: 5001
+
+
+############################################################
+#
+#数据库设置
+#
+############################################################
+
+spring:
+  application:
+    name: service-alpha
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/springcloud?useSSL=false&allowPublicKeyRetrieval=true
+    username: springcloud
+    password: 123456
+    driverClassName: com.mysql.cj.jdbc.Driver
+  #服务注册
+  cloud:
+    # consul server地址
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        # 健康检查 一定要配置 结合 spring-boot-starter-actuator 使用
+        health-check-path: /actuator/health
+        health-check-interval: 5s
+        register: true
+
+
+  redis:
+    #    url: redis://127.0.0.1:6379
+    database: 0
+    password: 123456
+    host: 127.0.0.1
+    port: 6379
+
+
+
+############################################################
+#
+#mybatis
+#
+############################################################
+
+##检查 mybatis 配置是否存在，一般命名为 mybatis-config.xml
+mybatis:
+  check-config-location: true
+  ##配置文件位置
+  config-location: classpath:mybatis/mybatis-config.xml
+  ## mapper xml 文件地址
+  mapper-locations: classpath*:mapper/*/*Mapper.xml
+##日志级别
+#logging.level.com.yang.dao=debug
+
+
+
+
+
+
+
+###安全配置
+security:
+  oauth2:
+    resource:
+      id: resource-server
+      ## user-info-uri和token-info-uri二选择即可
+      ##如果配置了user-info-uri，该资源服务器使用userInfoTokenServices远程调用认证中心接口，通过认证中心的OAuth2AuthenticationProcessingFilter完成验证工作，一般设置user-info-uri即可
+#      user-info-uri: http://127.0.0.1:5000/user
+      #      user-info-uri: lb://oauth/user
+      user-info-uri: http://127.0.0.1:8080/uaa/user
+      prefer-token-info: false
+      ## 该资源服务器使用RemoteTokenServices远程调用认证中心接口，注意一点就是如果使用token-info-uri那么就必须设置上clientId和clientSecret，通过CheckTokenEndpoint完成验证工作
+      #token-info-uri: http://127.0.0.1:8001/oauth/check_token
+      #client:
+      #client-secret: yaohw
+      #client-id: yaohw
+
+
+
+logging:
+  level:
+#    root: debug
+#    org.springframework.web: debug
+    org.springframework.security: debug
+
+

@@ -1,0 +1,81 @@
+
+server:
+  port: 8080
+  servlet:
+    session:
+      cookie:
+        name: UISESSION
+spring:
+  cloud:
+    consul:
+      host: localhost
+      #  Consul监听端口8500
+      port: 8500
+      discovery:
+        # 配置服务注册到Consul上
+        register: true
+        # 配置服务健康检测地址  供Consul 调用
+        health-check-path: /api/health
+        # consul 健康检测频率
+        health-check-interval: 5s
+        # 配置注册到consul 服务的id
+        instance-id: ${spring.application.name}:${server.port}
+        enabled: true
+        service-name: ${spring.application.name}
+  application:
+    name: ecology-getway
+  thymeleaf:
+    cache: true
+zuul:
+  host:
+    connect-timeout-millis: 10000
+    socket-timeout-millis: 60000
+  routes:
+#    ratelimit-api:
+#      path: /ratelimit-api/**
+#      serviceId: service-client
+#      sensitiveHeaders: "*"
+#    login:
+#      path: /login/**
+#      sensitiveHeaders: "*"
+#      serviceId: server-login
+    auth:
+      path: /uaa/**
+      serviceId: oauth
+      strip-prefix: true
+      custom-sensitive-headers: true
+    user:
+      path: /user/**
+      serviceId: service-account-center
+    service-alpha:
+      path: /api/service-alpha/**
+      serviceId: service-alpha
+#      filters:
+#        - StripPrefix=1
+#  ratelimit:
+#    key-prefix: ratelimit-api
+#    # 启动限流服务
+#    enabled: true
+#    behind-proxy: true
+#    default-policy:
+#      # 请求数量
+#      limit: 100
+#      # 请求总时间
+#      quota: 20
+#      # 统计窗口刷新时间
+#      refresh-interval: 60
+#      # 限流类型
+#      type: url
+#  ignored-services: '*'
+#  add-proxy-headers: true
+#  retryable: true
+#  sensitive-headers:
+security:
+  oauth2:
+    client:
+      access-token-uri: http://localhost:${server.port}/uaa/oauth/token
+      user-authorization-uri: http://localhost:${server.port}/uaa/oauth/authorize
+      client-id: open-api
+    resource:
+      user-info-uri: http://localhost:${server.port}/uaa/user
+      prefer-token-info: false

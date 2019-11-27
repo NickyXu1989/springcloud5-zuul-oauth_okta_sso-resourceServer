@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.oauth.dao.OauthUserDAO">
+
+    <resultMap id="UserMapping" type="com.example.oauth.dto.OauthUserDTO">
+        <!-- id属性来映射主键字段 -->
+        <id column="id" property="id" javaType="String"/>
+
+        <!-- result属性映射非主键字段 -->
+        <result column="user_name" property="username" javaType="String"/>
+        <result column="password" property="password" javaType="String"/>
+        <result column="is_enabled" property="enabled" javaType="Boolean"/>
+        <result column="first_name" property="firstName" javaType="String"/>
+        <result column="last_name" property="lastName" javaType="String"/>
+        <result column="mail_address" property="mailAddress" javaType="String"/>
+        <result column="avatar" property="avatar" javaType="String"/>
+        <result column="created_date" property="createdDate" javaType="Date"/>
+        <result column="updated_date" property="updatedDate" javaType="Date"/>
+    </resultMap>
+
+    <select id="findUserByUsername" parameterType="String" resultMap="UserMapping">
+        SELECT * FROM oauth_user
+        WHERE user_name=#{1}
+    </select>
+
+    <select id="findUserByEmail" parameterType="String" resultMap="UserMapping">
+        SELECT * FROM oauth_user
+        WHERE mail_address=#{1}
+    </select>
+
+
+    <select id="countUserByName" parameterType="String" resultType="int">
+        SELECT count(*) FROM oauth_user
+        WHERE user_name=#{1}
+    </select>
+
+
+    <!--<update id="updateUserByUsername" parameterMap="user">-->
+    <!--UPDATE permission_user SET USER_PASSWORD=#{user_password} WHERE USER_NAME=#{user_name}-->
+    <!--</update>-->
+
+    <delete id="deleteUserByUsername" parameterType="String">
+        DELETE FROM oauth_user WHERE USER_NAME=#{1}
+    </delete>
+
+    <!-- 使用alias自定义的parameterType-->
+    <!--<insert id="saveUser" parameterMap="user">-->
+    <!--INSERT INTO permission_user (user_password,user_name) VALUES (#{user_password},#{user_name})-->
+    <!--</insert>-->
+
+    <select id="getAllUsers" resultMap="UserMapping">
+        SELECT  * FROM oauth_user
+    </select>
+
+    <insert id="saveUser" parameterType="com.example.oauth.dto.OauthUserDTO">
+        insert into oauth_user(id,avatar,first_name,last_name,is_enabled,mail_address,user_name,password,created_date,updated_date)
+        values (
+        #{id},
+        #{avatar},
+        #{firstName},
+        #{lastName},
+        #{enabled},
+        #{mailAddress},
+        #{username},
+        #{password},
+        #{createdDate},
+        #{updatedDate}
+        )
+        <selectKey keyColumn="id" resultType="String" keyProperty="id" order="AFTER">
+            select last_insert_id()
+        </selectKey>
+    </insert>
+
+</mapper>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.oauth.dao.OauthPrivilegeDAO">
+
+    <select id="getPrivilegeByUserId" parameterType="String" resultType="com.example.oauth.dto.OauthPrivilegeDTO">
+        SELECT d.id, d.detail, d.name
+        FROM
+            oauth_user a ,
+            oauth_role b,
+            oauth_user_role_rel c,
+            oauth_privilege d,
+            oauth_privilege_role_rel e
+        WHERE
+            a.id = #{1}
+            and a.id = c.user_id
+            and b.id = c.role_id
+            and b.id = e.role_id
+            and d.id = e.privilege_id
+    </select>
+
+</mapper>

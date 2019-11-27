@@ -1,0 +1,100 @@
+
+server:
+  port: 5000
+
+
+############################################################
+#
+#数据库设置
+#
+############################################################
+
+spring:
+  application:
+    name: oauth
+  #  main:
+  #    allow-bean-definition-overriding: true
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/springcloud?useSSL=false&allowPublicKeyRetrieval=true
+    username: springcloud
+    password: 123456
+    driverClassName: com.mysql.cj.jdbc.Driver
+  #服务注册
+  cloud:
+    # consul server地址
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        # 健康检查 一定要配置 结合 spring-boot-starter-actuator 使用
+        health-check-path: /actuator/health
+        health-check-interval: 5s
+        register: true
+
+  redis:
+#    url: redis://127.0.0.1:6379
+    database: 0
+    password: 123456
+    host: 127.0.0.1
+    port: 6379
+#  security:
+#    oauth2:
+#      client:
+#        provider:
+#          oauth:
+#            authorization-uri: http://localhost:${server.port}/oauth/authorize
+#            token-uri: http://localhost:${server.port}/oauth/token
+#            userInfoUri: http://localhost:${server.port}/user
+#            userNameAttribute: name
+
+
+
+############################################################
+#
+#mybatis
+#
+############################################################
+
+##检查 mybatis 配置是否存在，一般命名为 mybatis-config.xml
+mybatis:
+  check-config-location: true
+  ##配置文件位置
+  config-location: classpath:mybatis/mybatis-config.xml
+  ## mapper xml 文件地址
+  mapper-locations: classpath*:mapper/*/*Mapper.xml
+##日志级别
+#logging.level.com.yang.dao=debug
+
+
+
+
+
+############################################################
+#
+# token redis设置
+#
+############################################################
+
+
+token:
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: 123456
+    database: 1
+    timeout: 5000
+
+
+
+
+#security:
+#  oauth2:
+#    resource:
+#      filter-order: 3
+
+#logging:
+#  level:
+#    root: debug
+#    org.springframework.web: debug
+#    org.springframework.security: debug
+
